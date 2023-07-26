@@ -14,10 +14,24 @@
       <el-input v-model="dataForm.age" placeholder="年龄"></el-input>
     </el-form-item>
     <el-form-item label="部门名称" prop="deptName">
-      <el-input v-model="dataForm.deptName" placeholder="部门名称"></el-input>
+      <el-select v-model="dataForm.deptName" placeholder="部门名称" style="width: 100%">
+        <el-option
+          v-for="item in departments"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value">
+        </el-option>
+      </el-select>
     </el-form-item>
     <el-form-item label="学历" prop="empDegreeName">
-      <el-input v-model="dataForm.empDegreeName" placeholder="学历"></el-input>
+      <el-select v-model="dataForm.empDegreeName" placeholder="学历" style="width: 100%">
+        <el-option
+          v-for="item in degrees"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value">
+        </el-option>
+      </el-select>
     </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -42,6 +56,26 @@
           deptName: '',
           empDegreeName: ''
         },
+        departments: [{
+          value: '人事部',
+          label: '人事部'
+        },{
+          value: '业务部',
+          label: '业务部'
+        }, {
+          value: '后勤部',
+          label: '后勤部'
+        }],
+        degrees: [{
+          value: '大专',
+          label: '大专'
+        },{
+          value: '本科',
+          label: '本科'
+        }, {
+          value: '研究生',
+          label: '研究生'
+        }],
         dataRule: {
           empName: [
             { required: true, message: '职员姓名不能为空', trigger: 'blur' }
