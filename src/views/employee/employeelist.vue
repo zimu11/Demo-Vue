@@ -131,20 +131,14 @@ export default {
         label: '后勤部'
       }],
       degrees: [{
-        value: '小学',
-        label: '小学'
-      },{
-        value: '高中',
-        label: '高中'
-      },{
         value: '专科',
         label: '专科'
       },{
         value: '本科',
         label: '本科'
       }, {
-        value: '硕士',
-        label: '硕士'
+        value: '研究生',
+        label: '研究生'
       }],
       dataList: [],
       pageIndex: 1,
