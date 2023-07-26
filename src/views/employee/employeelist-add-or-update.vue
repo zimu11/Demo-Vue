@@ -1,0 +1,128 @@
+<template>
+  <el-dialog
+    :title="!dataForm.id ? '新增' : '修改'"
+    :close-on-click-modal="false"
+    :visible.sync="visible">
+    <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
+    <el-form-item label="职员姓名" prop="empName">
+      <el-input v-model="dataForm.empName" placeholder="职员姓名"></el-input>
+    </el-form-item>
+    <el-form-item label="性别" prop="sex">
+      <el-input v-model="dataForm.sex" placeholder="1表示男 0表示女"></el-input>
+    </el-form-item>
+    <el-form-item label="年龄" prop="age">
+      <el-input v-model="dataForm.age" placeholder="年龄"></el-input>
+    </el-form-item>
+    <el-form-item label="部门名称" prop="deptName">
+      <el-input v-model="dataForm.deptName" placeholder="部门名称"></el-input>
+    </el-form-item>
+    <el-form-item label="学历" prop="empDegreeName">
+      <el-input v-model="dataForm.empDegreeName" placeholder="学历"></el-input>
+    </el-form-item>
+    </el-form>
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="visible = false">取消</el-button>
+      <el-button type="primary" @click="dataFormSubmit()">确定</el-button>
+    </span>
+  </el-dialog>
+</template>
+
+<script>
+  import request from "@/utils/request";
+
+  export default {
+    data () {
+      return {
+        visible: false,
+        dataForm: {
+          id: 0,
+          empName: '',
+          sex: '',
+          age: '',
+          deptName: '',
+          empDegreeName: ''
+        },
+        dataRule: {
+          empName: [
+            { required: true, message: '职员姓名不能为空', trigger: 'blur' }
+          ],
+          sex: [
+            { required: true, message: '性别不能为空', trigger: 'blur' }
+          ],
+          age: [
+            { required: true, message: '年龄不能为空', trigger: 'blur' }
+          ],
+          deptName: [
+            { required: true, message: '部门名称不能为空', trigger: 'blur' }
+          ],
+          empDegreeName: [
+            { required: true, message: '学历不能为空', trigger: 'blur' }
+          ]
+        }
+      }
+    },
+    methods: {
+      init (id) {
+        this.dataForm.id = id || 0
+        this.visible = true
+        this.$nextTick(() => {
+          this.$refs['dataForm'].resetFields()
+          if (this.dataForm.id) {
+            request({
+              url: `/employeelist/info/${this.dataForm.id}`,
+              method: 'get',
+            }).then((res) => {
+              var data=res.employeeList
+              console.log(res)
+              if (res && res.code === 20000) {
+                this.dataForm.empName = data.empName
+                this.dataForm.sex = data.sex
+                this.dataForm.age = data.age
+                this.dataForm.deptName = data.deptName
+                this.dataForm.empDegreeName = data.empDegreeName
+              }
+            })
+          }
+        })
+      },
+      // 表单提交
+      dataFormSubmit () {
+        this.$refs['dataForm'].validate((valid) => {
+          if (valid) {
+            if(this.dataForm.sex=="男"){
+              this.dataForm.sex=1;
+            }else{
+              this.dataForm.sex=0;
+            }
+            request({
+              url:  `/employeelist/${!this.dataForm.id ? 'save' : 'update'}`,
+              method: 'post',
+              data: ({
+                'id': this.dataForm.id || undefined,
+                'empName': this.dataForm.empName,
+                'sex': this.dataForm.sex,
+                'age': this.dataForm.age,
+                'deptName': this.dataForm.deptName,
+                'empDegreeName': this.dataForm.empDegreeName
+              })
+            }).then((res) => {
+              if (res && res.code === 20000) {
+                this.$message({
+                  message: '操作成功',
+                  type: 'success',
+                  duration: 1500,
+                  onClose: () => {
+                    this.visible = false
+                    this.$emit('refreshDataList')
+                  }
+                })
+              } else {
+                this.$message.error(res.message)
+              }
+            })
+          }
+        })
+      }
+    }
+  }
+</script>
