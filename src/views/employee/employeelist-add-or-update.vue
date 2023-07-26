@@ -8,7 +8,14 @@
       <el-input v-model="dataForm.empName" placeholder="职员姓名"></el-input>
     </el-form-item>
     <el-form-item label="性别" prop="sex">
-      <el-input v-model="dataForm.sex" placeholder="1表示男 0表示女"></el-input>
+      <el-select v-model="dataForm.sex" placeholder="性别" style="width: 100%">
+        <el-option
+          v-for="item in sexs"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value">
+        </el-option>
+      </el-select>
     </el-form-item>
     <el-form-item label="年龄" prop="age">
       <el-input v-model="dataForm.age" placeholder="年龄"></el-input>
@@ -56,6 +63,13 @@
           deptName: '',
           empDegreeName: ''
         },
+        sexs: [{
+          value: '1',
+          label: '男'
+        },{
+          value: '0',
+          label: '女'
+        }],
         departments: [{
           value: '人事部',
           label: '人事部'
@@ -110,7 +124,7 @@
               console.log(res)
               if (res && res.code === 20000) {
                 this.dataForm.empName = data.empName
-                this.dataForm.sex = data.sex
+                this.dataForm.sex = data.sex==1?"男":"女"
                 this.dataForm.age = data.age
                 this.dataForm.deptName = data.deptName
                 this.dataForm.empDegreeName = data.empDegreeName
@@ -123,11 +137,11 @@
       dataFormSubmit () {
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
-            if(this.dataForm.sex=="男"){
-              this.dataForm.sex=1;
-            }else{
-              this.dataForm.sex=0;
-            }
+            // if(this.dataForm.sex=="男"){
+            //   this.dataForm.sex=1;
+            // }else{
+            //   this.dataForm.sex=0;
+            // }
             request({
               url:  `/employeelist/${!this.dataForm.id ? 'save' : 'update'}`,
               method: 'post',
